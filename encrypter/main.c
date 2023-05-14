@@ -16,7 +16,7 @@ int main(int argc, char **argv)
   int flag;
   char* key = NULL;
   char* message = NULL;
-  char* output_filename = "encrypted_message";
+  char* output_filepath = NULL;
 
   while ((flag = getopt(argc, argv, "hk:m:o:")) != -1)
   {
@@ -28,6 +28,8 @@ int main(int argc, char **argv)
     case 'm':
       message = optarg;
       break;
+    case 'o':
+      output_filepath = optarg;
     case 'h':
       printf("Possible options:\n\
   -h    The help menu (this output)\n\
@@ -45,13 +47,20 @@ int main(int argc, char **argv)
     printf("Failed to encrypt: Must provide both key and message\n");
     return 1;
   }
+  if (output_filepath == NULL)
+  {
+    output_filepath = "encrypted_message";
+  }
 
   char* encrypted_message = NULL;
   int encrypted_message_len = encrypt(strlen(key), key, strlen(message), message, encrypted_message);
 
   if (encrypted_message_len > 0)
   {
-    printf("Successfully encrypted to file: %s\n", output_filename);
+    FILE *file_p = fopen(output_filepath, "w");
+    fputs(encrypted_message, file_p);
+    fclose(file_p);
+    printf("Successfully encrypted to file: %s\n", output_filepath);
     return 0;
   }
   else

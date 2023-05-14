@@ -4,5 +4,10 @@
 
 int encrypt(int key_len, char* key, int message_len, char* message, char *encoded_message)
 {
-  return 0;
+  if (key_len <= 0 || message_len <= 0)
+  {
+    return -1;
+  }
+
+  return -1;
 }
