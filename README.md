@@ -12,6 +12,10 @@ $ make
 The programs are called as follows:
 
 ```
-$ encrypter -k <key> -m <message>
-$ decrypter -k <key>
+$ encrypter -k <key> -m <message> -o <optional outfile>
+$ decrypter -k <key> -i <optional infile>
 ```
+
+### Requirements
+
+In order to build properly, this requires gcc, cmake, and openssl.
