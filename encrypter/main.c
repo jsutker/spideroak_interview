@@ -52,14 +52,8 @@ int main(int argc, char **argv)
     output_filepath = "encrypted_message";
   }
 
-  char* encrypted_message = NULL;
-  int encrypted_message_len = encrypt(strlen(key), key, strlen(message), message, encrypted_message);
-
-  if (encrypted_message_len > 0)
+  if (encrypt_to_file(key, message, output_filepath))
   {
-    FILE *file_p = fopen(output_filepath, "w");
-    fputs(encrypted_message, file_p);
-    fclose(file_p);
     printf("Successfully encrypted to file: %s\n", output_filepath);
     return 0;
   }

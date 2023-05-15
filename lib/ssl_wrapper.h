@@ -1,1 +1,1 @@
-int encrypt(int key_len, char* key, int message_len, char* message, char *encoded_message);
+int encrypt_to_file(char* pass, char* message, char* filepath);
