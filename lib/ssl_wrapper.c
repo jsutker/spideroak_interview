@@ -56,8 +56,8 @@ int decrypt_from_file(char* pass, char** message, char* filepath)
   /**
    * Basic decryption of a file using a passphrase
    * @param pass     The passphrase
-   * @param message  The message to encrypt
-   * @param filepath The path of a file to which we are writing our encrypted message
+   * @param message  A pointer to where the message will be stored
+   * @param filepath The path of a file to which contains our encrypted message
    * @return         1 if successful, 0 if not
    */
   
