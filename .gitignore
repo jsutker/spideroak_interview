@@ -3,4 +3,6 @@
 **/cmake_install.cmake
 **/Makefile
 encrypter/encrypter
+decrypter/decrypter
 *.a
+**/encrypted_message

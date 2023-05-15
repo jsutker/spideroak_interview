@@ -36,11 +36,62 @@ int encrypt_to_file(char* pass, char* message, char* filepath)
   unsigned int blocksize = EVP_CIPHER_CTX_block_size(ctx);
   unsigned char *buf = malloc((sizeof(char)*strlen(message))+blocksize);
   int encrypted_len;
-  EVP_CipherUpdate(ctx, buf, &encrypted_len, message, strlen(message));
 
+  EVP_CipherUpdate(ctx, buf, &encrypted_len, message, strlen(message));
   FILE *fp = fopen(filepath, "wb");
   fwrite(buf, sizeof(unsigned char), encrypted_len, fp);
   fclose(fp);
+
+  EVP_CipherFinal(ctx, buf, &encrypted_len);
+  fp = fopen(filepath, "ab");
+  fwrite(buf, sizeof(unsigned char), encrypted_len, fp);
+  fclose(fp);
+
+  EVP_CIPHER_CTX_free(ctx);
+  return 1;
+}
+
+int decrypt_from_file(char* pass, char** message, char* filepath)
+{
+  /**
+   * Basic decryption of a file using a passphrase
+   * @param pass     The passphrase
+   * @param message  The message to encrypt
+   * @param filepath The path of a file to which we are writing our encrypted message
+   * @return         1 if successful, 0 if not
+   */
+  
+  // Setup decryption
+  unsigned char key[32] = {};
+  if (0 == PKCS5_PBKDF2_HMAC_SHA1(pass, strlen(pass), salt, 9, 1, 32, key))
+  {
+    return 0;
+  }
+
+  unsigned char iv[32] = {};
+  if (0 == PKCS5_PBKDF2_HMAC_SHA1(pass, strlen(pass), salt2, 9, 1, 32, iv))
+  {
+    return 0;
+  }
+  
+  EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+  EVP_CipherInit(ctx, EVP_aes_256_cbc(), key, iv, 0);
+  unsigned int blocksize = EVP_CIPHER_CTX_block_size(ctx);
+
+  FILE *fp = fopen(filepath, "rb");
+  fseek(fp, 0L, SEEK_END);
+  int fsize = ftell(fp);
+  char *buf = malloc(sizeof(char)*fsize);
+  rewind(fp);
+
+  fread(buf, sizeof(char), fsize, fp);
+  fclose(fp);
+
+  int decrypted_len;
+  *message = malloc(sizeof(char)*fsize);
+  memset(*message, 0, sizeof(char)*fsize);
+  EVP_CipherUpdate(ctx, *message, &decrypted_len, buf, fsize);
+  EVP_CipherFinal(ctx, (*message)+decrypted_len, &decrypted_len);
 
   EVP_CIPHER_CTX_free(ctx);
   return 1;
