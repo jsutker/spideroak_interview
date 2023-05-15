@@ -8,7 +8,7 @@
 int main(int argc, char **argv)
 {
   /**
-   * Process flags/arguments to be encrypted
+   * Process flags/arguments to be decrypted
    * @param argc Argument count
    * @param argv The arguments given
    * @return     A potential error code (1 if a problem arose, 0 if successful)
